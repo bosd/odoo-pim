@@ -4,7 +4,7 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 14.0\n"
+"Project-Id-Version: Odoo Server 16.0\n"
 "Report-Msgid-Bugs-To: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -65,14 +65,15 @@ msgid "Attribute set owner mixin"
 msgstr ""
 
 #. module: attribute_set_completeness
-#: model:ir.model.fields.selection,name:attribute_set_completeness.selection__attribute_set_owner_mixin__attribute_set_completion_state__complete
-#: model:ir.model.fields.selection,name:attribute_set_completeness.selection__product_template__attribute_set_completion_state__complete
-msgid "Complete"
+#: model_terms:ir.ui.view,arch_db:attribute_set_completeness.attribute_set_form_view
+msgid "COMPLETNESS"
 msgstr ""
 
 #. module: attribute_set_completeness
-#: model_terms:ir.ui.view,arch_db:attribute_set_completeness.attribute_set_form_view
-msgid "Completeness"
+#: model:ir.model.fields.selection,name:attribute_set_completeness.selection__attribute_set_owner_mixin__attribute_set_completion_state__complete
+#: model:ir.model.fields.selection,name:attribute_set_completeness.selection__product_product__attribute_set_completion_state__complete
+#: model:ir.model.fields.selection,name:attribute_set_completeness.selection__product_template__attribute_set_completion_state__complete
+msgid "Complete"
 msgstr ""
 
 #. module: attribute_set_completeness
@@ -102,9 +103,7 @@ msgid "Created on"
 msgstr ""
 
 #. module: attribute_set_completeness
-#: model:ir.model.fields,field_description:attribute_set_completeness.field_attribute_set__display_name
 #: model:ir.model.fields,field_description:attribute_set_completeness.field_attribute_set_completeness__display_name
-#: model:ir.model.fields,field_description:attribute_set_completeness.field_attribute_set_owner_mixin__display_name
 msgid "Display Name"
 msgstr ""
 
@@ -124,16 +123,12 @@ msgid "Fields related to the Attribute set's attributes"
 msgstr ""
 
 #. module: attribute_set_completeness
-#: model:ir.model.fields,field_description:attribute_set_completeness.field_attribute_set__id
 #: model:ir.model.fields,field_description:attribute_set_completeness.field_attribute_set_completeness__id
-#: model:ir.model.fields,field_description:attribute_set_completeness.field_attribute_set_owner_mixin__id
 msgid "ID"
 msgstr ""
 
 #. module: attribute_set_completeness
-#: model:ir.model.fields,field_description:attribute_set_completeness.field_attribute_set____last_update
 #: model:ir.model.fields,field_description:attribute_set_completeness.field_attribute_set_completeness____last_update
-#: model:ir.model.fields,field_description:attribute_set_completeness.field_attribute_set_owner_mixin____last_update
 msgid "Last Modified on"
 msgstr ""
 
@@ -154,6 +149,7 @@ msgstr ""
 
 #. module: attribute_set_completeness
 #: model:ir.model.fields.selection,name:attribute_set_completeness.selection__attribute_set_owner_mixin__attribute_set_completion_state__not_complete
+#: model:ir.model.fields.selection,name:attribute_set_completeness.selection__product_product__attribute_set_completion_state__not_complete
 #: model:ir.model.fields.selection,name:attribute_set_completeness.selection__product_template__attribute_set_completion_state__not_complete
 msgid "Not complete"
 msgstr ""
@@ -164,6 +160,7 @@ msgid "Total"
 msgstr ""
 
 #. module: attribute_set_completeness
+#. odoo-python
 #: code:addons/attribute_set_completeness/models/attribute_set.py:0
 #, python-format
 msgid "Total of completion rate must be 100 %"
