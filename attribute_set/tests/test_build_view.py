@@ -40,7 +40,7 @@ class BuildViewCase(TransactionCase):
                 "email": "attribute.manager@test.odoo.com",
             }
         )
-        cls.attribute_manager_user.groups_id |= cls.env.ref("base.group_erp_manager")
+        cls.attribute_manager_user.group_ids |= cls.env.ref("base.group_erp_manager")
 
         cls.loader = FakeModelLoader(cls.env, cls.__module__)
         cls.loader.backup_registry()
