@@ -6,7 +6,6 @@
 from lxml import etree
 
 from odoo import api, fields, models
-from odoo.exceptions import ValidationError
 
 
 class AttributeSetOwnerMixin(models.AbstractModel):
@@ -57,19 +56,17 @@ class AttributeSetOwnerMixin(models.AbstractModel):
     def _insert_attribute(self, arch):
         """Replace attributes' placeholders with real fields in form view arch."""
         eview = etree.fromstring(arch)
-        form_name = eview.get("string")
         placeholder = eview.xpath("//separator[@name='attributes_placeholder']")
 
         if len(placeholder) != 1:
-            raise ValidationError(
-                self.env._(
-                    """It is impossible to add Attributes on "%(name)s" xml
-                    view as there is
-                    not one "<separator name="attributes_placeholder" />" in it.
-                    """,
-                    name=form_name,
-                )
+            # Also check for alternative placeholder name used in some views
+            placeholder = eview.xpath(
+                "//separator[@name='attributes_filter_placeholder']"
             )
+            if len(placeholder) != 1:
+                # If no known placeholder exists, return arch without error
+                # This prevents errors when view doesn't have attribute placeholders
+                return arch
 
         if self.env.context.get("include_native_attribute_view_ref"):
             self.remove_native_fields(eview)
