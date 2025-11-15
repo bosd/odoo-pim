@@ -5,7 +5,7 @@
 
 from lxml import etree
 
-from odoo import _, api, fields, models
+from odoo import api, fields, models
 from odoo.exceptions import ValidationError
 
 
@@ -62,7 +62,7 @@ class AttributeSetOwnerMixin(models.AbstractModel):
 
         if len(placeholder) != 1:
             raise ValidationError(
-                _(
+                self.env._(
                     """It is impossible to add Attributes on "%(name)s" xml
                     view as there is
                     not one "<separator name="attributes_placeholder" />" in it.

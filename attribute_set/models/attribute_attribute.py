@@ -403,14 +403,24 @@ class AttributeAttribute(models.Model):
         """Delete outdated attribute's field values on existing records."""
         self.ensure_one()
         custom_field = self.name
-        for obj in self.env[self.model].search([]):
-            if obj.fields_get(custom_field):
-                for value in obj[custom_field]:
-                    if value not in options:
-                        if self.attribute_type == "select":
-                            obj.write({custom_field: False})
-                        elif self.attribute_type == "multiselect":
-                            obj.write({custom_field: [(3, value.id, 0)]})
+        # Use search with batch processing to avoid performance issues
+        domain = []
+        batch_size = 1000
+        offset = 0
+
+        while True:
+            batch = self.env[self.model].search(domain, offset=offset, limit=batch_size)
+            if not batch:
+                break
+            for obj in batch:
+                if obj.fields_get(custom_field):
+                    for value in obj[custom_field]:
+                        if value not in options:
+                            if self.attribute_type == "select":
+                                obj.write({custom_field: False})
+                            elif self.attribute_type == "multiselect":
+                                obj.write({custom_field: [(3, value.id, 0)]})
+            offset += batch_size
 
     def write(self, vals):
         # Prevent from changing Attribute's type
