@@ -19,7 +19,7 @@
                 <field name="model_id" invisible="context.get('default_model_id')" />
                 <separator invisible="nature == 'native'" />
                 <group>
-                    <group invisible="nature == 'native'">
+                    <group invisible="nature == 'native'" colspan="2">
                         <group>
                             <field
                                 name="field_description"
@@ -42,8 +42,7 @@
                             />
                             <field name="serialized" readonly="create_date" />
                         </group>
-                    </group>
-                    <group>
+                        <newline />
                         <group>
                             <field
                                 name="field_id"
