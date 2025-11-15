@@ -250,7 +250,7 @@ class AttributeAttribute(models.Model):
     @api.onchange("name")
     def onchange_name(self):
         name = self.name
-        if not name.startswith("x_"):
+        if name and not name.startswith("x_"):
             self.name = f"x_{name}"
 
     @api.onchange("attribute_type")
