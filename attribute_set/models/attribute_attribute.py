@@ -497,6 +497,23 @@ class AttributeAttribute(models.Model):
 
         return res
 
+    def copy(self, default=None):
+        """Ensure unique name when duplicating attribute."""
+        default = default or {}
+        if "name" not in default:
+            # Get the original name and add a suffix to make it unique
+            original_name = self.name
+            counter = 1
+            new_name = f"{original_name}_copy{counter}"
+
+            # Keep incrementing counter until we find a unique name
+            while self.search_count([("name", "=", new_name)]) > 0:
+                counter += 1
+                new_name = f"{original_name}_copy{counter}"
+
+            default["name"] = new_name
+        return super().copy(default)
+
     def unlink(self):
         """Delete the Attribute's related field when deleting a custom Attribute"""
         fields_to_remove = self.filtered(lambda s: s.nature == "custom").mapped(
