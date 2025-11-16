@@ -468,6 +468,25 @@ class AttributeAttribute(models.Model):
                         and vice versa."""
                     )
                 )
+        # For native attributes, remove field-related values to prevent modification of base fields
+        for att in self:
+            if att.nature == "native":
+                # Remove field-related keys that would modify the underlying ir.model.fields record
+                field_related_keys = {
+                    "name",
+                    "field_description",
+                    "ttype",
+                    "relation",
+                    "size",
+                    "required",
+                    "readonly",
+                    "translate",
+                    "selection",
+                    "domain",
+                }
+                for key in field_related_keys.intersection(set(vals.keys())):
+                    vals.pop(key, None)
+
         # Set the new values to self
         res = super().write(vals)
 
