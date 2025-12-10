@@ -41,6 +41,7 @@
                                 invisible="attribute_type not in ['char', 'text']"
                             />
                             <field name="serialized" readonly="create_date" />
+                            <field name="company_dependent" readonly="create_date" />
                         </group>
                     </group>
                     <group>

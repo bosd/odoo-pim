@@ -102,3 +102,12 @@ class TestAttributeSet(common.TransactionCase):
         len_default = len(attribute.option_ids)
         self.assertTrue(wizard1 != wizard2)
         self.assertEqual(len_default, len_3)
+
+    def test_create_attribute_company_dependent(self):
+        attribute = self._create_attribute(
+            {"attribute_type": "char", "company_dependent": True}
+        )
+        self.assertTrue(attribute.company_dependent)
+        self.assertTrue(
+            self.env["res.partner"]._fields[attribute.name].company_dependent
+        )

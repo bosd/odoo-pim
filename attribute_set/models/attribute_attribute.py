@@ -115,6 +115,7 @@ class AttributeAttribute(models.Model):
     sequence = fields.Integer(
         "Sequence in Group", help="The attribute's order in his group"
     )
+    company_dependent = fields.Boolean()
 
     def _get_attrs(self):
         attrs = {"invisible": f"attribute_set_id not in {self.attribute_set_ids.ids}"}
@@ -301,6 +302,16 @@ class AttributeAttribute(models.Model):
             "target": "new",
         }
 
+    def set_domain(self):
+        for record in self:
+            if not record.relation_model_id and record.attribute_type in [
+                "select",
+                "multiselect",
+            ]:
+                domain = f"[('attribute_id', '=', {record.id})]"
+                if record.domain != domain:
+                    record.field_id.domain = domain
+
     @api.model_create_multi
     def create(self, vals_list):
         """Create an attribute.attribute
@@ -387,7 +398,18 @@ class AttributeAttribute(models.Model):
                     )
 
             vals["state"] = "manual"
-        return super().create(vals_list)
+
+        attr = super().create(vals)
+        if attr.company_dependent:
+            self.flush()
+            self.pool.setup_models(self._cr)
+            # update database schema of model and its descendant models
+            models = self.pool.descendants([attr.model_id._name], "_inherits")
+            self.pool.init_models(
+                self._cr, models, dict(self._context, update_custom_fields=True)
+            )
+        attr.set_domain()
+        return attr
 
     def _delete_related_option_wizard(self, option_vals):
         """Delete related attribute's options wizards."""
@@ -484,6 +506,8 @@ class AttributeAttribute(models.Model):
             # as a field, if these values are not in the new Domain or Options list
             if {"option_ids", "domain"} & set(vals.keys()):
                 att._delete_old_fields_options(options)
+
+        self.set_domain()
 
         return res
 
