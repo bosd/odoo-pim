@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_attribute_option_pim_manager,attribute.option pim manager,attribute_set.model_attribute_option,pim.group_pim_manager,1,1,1,1
+access_attribute_option_wizard_pim_manager,attribute.option.wizard pim manager,attribute_set.model_attribute_option_wizard,pim.group_pim_manager,1,1,1,0
