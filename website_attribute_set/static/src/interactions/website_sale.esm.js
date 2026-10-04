@@ -28,9 +28,10 @@ patch(WebsiteSale.prototype, {
         // instead of triggering a search as soon as the first bound changes.
         this.dynamicContent = {
             ...this.dynamicContent,
-            "form.js_attributes input[name^='additional_attr_min_'], form.js_attributes input[name^='additional_attr_max_']": {
-                "t-on-input": this.onChangeAttribute,
-            },
+            "form.js_attributes input[name^='additional_attr_min_'], form.js_attributes input[name^='additional_attr_max_']":
+                {
+                    "t-on-input": this.onChangeAttribute,
+                },
         };
     },
 
