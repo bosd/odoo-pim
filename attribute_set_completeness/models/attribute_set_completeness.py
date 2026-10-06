@@ -21,25 +21,25 @@ class AttributeSetCompleteness(models.Model):
     field_id = fields.Many2one(
         "ir.model.fields", "Field Name", required=True, ondelete="cascade"
     )
-    field_description = fields.Char(
-        related="field_id.field_description",
-        string="Field Description",
-        store=True,
-        readonly=True,
-    )
+    field_description = fields.Char(related="field_id.field_description")
     completion_rate = fields.Float()
     completion_rate_progress = fields.Float(
-        string="Completion Rate Progress", related="completion_rate", readonly=True
+        string="Completion Rate Progress", related="completion_rate"
     )
-    model_id = fields.Many2one(related="attribute_set_id.model_id", readonly=True)
+    model_id = fields.Many2one(related="attribute_set_id.model_id")
 
-    @api.depends("attribute_set_id")
+    @api.depends(
+        "attribute_set_id.complete_attribute_ids",
+        "attribute_set_id.attribute_set_completeness_ids.field_id",
+    )
     def _compute_available_field_ids(self):
         for rec in self:
-            att_set_field_ids = rec.attribute_set_id.attribute_ids.mapped("field_id")
-            att_set_complete_ids = rec.attribute_set_id.attribute_set_completeness_ids
-            choosen_field_ids = att_set_complete_ids.mapped("field_id")
-            rec.available_field_ids = att_set_field_ids - choosen_field_ids
+            attr_set = rec.attribute_set_id
+            att_set_field_ids = attr_set.complete_attribute_ids.field_id
+            chosen_field_ids = attr_set.attribute_set_completeness_ids.field_id
+            rec.available_field_ids = att_set_field_ids - chosen_field_ids
 
-    def name_get(self):
-        return [(rec.id, rec.field_id.field_description) for rec in self]
+    @api.depends("field_id.field_description")
+    def _compute_display_name(self):
+        for rec in self:
+            rec.display_name = rec.field_id.field_description or ""

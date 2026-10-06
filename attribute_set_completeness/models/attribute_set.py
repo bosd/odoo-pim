@@ -1,8 +1,9 @@
 # Copyright 2020 ACSONE SA/NV
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
-from odoo import _, api, fields, models
+from odoo import api, fields, models
 from odoo.exceptions import ValidationError
+from odoo.tools import float_compare
 
 
 class AttributeSet(models.Model):
@@ -12,7 +13,7 @@ class AttributeSet(models.Model):
         comodel_name="attribute.set.completeness",
         inverse_name="attribute_set_id",
         string="Completeness Requirements",
-        auto_join=True,
+        bypass_search_access=True,
     )
 
     @api.constrains("attribute_set_completeness_ids")
@@ -20,6 +21,8 @@ class AttributeSet(models.Model):
         for attr_set in self:
             completion_config = attr_set.attribute_set_completeness_ids
             if completion_config:
-                total = sum([rule.completion_rate for rule in completion_config])
-                if total != 100.0:
-                    raise ValidationError(_("Total of completion rate must be 100 %"))
+                total = sum(completion_config.mapped("completion_rate"))
+                if float_compare(total, 100.0, precision_digits=2):
+                    raise ValidationError(
+                        self.env._("Total of completion rate must be 100 %")
+                    )

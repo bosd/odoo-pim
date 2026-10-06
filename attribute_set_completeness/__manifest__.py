@@ -3,15 +3,15 @@
 
 {
     "name": "Attribute Set Completeness",
-    "version": "16.0.1.0.0",
+    "version": "19.0.1.0.0",
     "license": "AGPL-3",
     "author": "ACSONE SA/NV, Odoo Community Association (OCA)",
     "website": "https://github.com/OCA/odoo-pim",
-    "depends": ["attribute_set", "component_event"],
+    "depends": ["attribute_set"],
     "data": [
         "views/attribute_set.xml",
         "security/attribute_set_completeness.xml",
         "views/attribute_set_completeness.xml",
     ],
-    "demo": [],
+    "pre_init_hook": "pre_init_hook",
 }
