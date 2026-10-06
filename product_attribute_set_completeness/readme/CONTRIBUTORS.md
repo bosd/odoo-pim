@@ -7,3 +7,4 @@
   > - Iván Todorovich \<ivan.todorovich@gmail.com\>
 
 - Dhara Solanki \<dhara.solanki@initos.com\>
+- bosd

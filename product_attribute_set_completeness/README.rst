@@ -78,6 +78,8 @@ Contributors
 
 - Dhara Solanki <dhara.solanki@initos.com>
 
+- bosd
+
 Maintainers
 -----------
 
