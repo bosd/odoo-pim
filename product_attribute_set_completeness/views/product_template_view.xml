@@ -49,7 +49,7 @@
             </field>
         </field>
     </record>
-     <record id="product_template_search_view" model="ir.ui.view">
+    <record id="product_template_search_view" model="ir.ui.view">
         <field
             name="name"
         >product.template.search (in product_attribute_set_completeness)</field>
