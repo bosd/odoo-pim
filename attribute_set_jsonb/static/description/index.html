@@ -379,11 +379,11 @@ ul.auto-toc {
 by integrating with <tt class="docutils literal">base_sparse_field_jsonb</tt> from OCA/server-tools.</p>
 <div class="section" id="features">
 <h2>Features</h2>
-<div class="section" id="automatic-jsonb-migration">
-<h3>Automatic JSONB Migration</h3>
-<p>On installation, the module automatically migrates <tt class="docutils literal">attribute_set</tt>’s
-<tt class="docutils literal">x_custom_json_attrs</tt> columns from TEXT to PostgreSQL JSONB format,
-providing:</p>
+<div class="section" id="jsonb-storage-with-gin-index">
+<h3>JSONB Storage with GIN Index</h3>
+<p><tt class="docutils literal">base_sparse_field_jsonb</tt> stores the <tt class="docutils literal">x_custom_json_attrs</tt>
+serialization field of <tt class="docutils literal">attribute_set</tt> as PostgreSQL JSONB. This
+module flags that field as indexed, so it gets a GIN index, providing:</p>
 <ul class="simple">
 <li><strong>Faster filtering</strong>: GIN indexes enable efficient key/value lookups</li>
 <li><strong>Native JSON operators</strong>: Database-level filtering instead of Python</li>
@@ -414,7 +414,7 @@ attribute</li>
 </div>
 <div class="section" id="technical-details">
 <h3>Technical Details</h3>
-<p>The module creates two types of indexes:</p>
+<p>The module relies on two types of indexes:</p>
 <ol class="arabic simple">
 <li><strong>GIN index on JSONB column</strong>: Enables fast key existence checks and
 value lookups across all attributes in the column</li>

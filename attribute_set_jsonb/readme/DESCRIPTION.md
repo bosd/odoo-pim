@@ -3,10 +3,10 @@ integrating with `base_sparse_field_jsonb` from OCA/server-tools.
 
 ## Features
 
-### Automatic JSONB Migration
-On installation, the module automatically migrates `attribute_set`'s
-`x_custom_json_attrs` columns from TEXT to PostgreSQL JSONB format,
-providing:
+### JSONB Storage with GIN Index
+`base_sparse_field_jsonb` stores the `x_custom_json_attrs` serialization field
+of `attribute_set` as PostgreSQL JSONB. This module flags that field as indexed,
+so it gets a GIN index, providing:
 
 * **Faster filtering**: GIN indexes enable efficient key/value lookups
 * **Native JSON operators**: Database-level filtering instead of Python
@@ -33,7 +33,7 @@ Install this module if you:
 
 ### Technical Details
 
-The module creates two types of indexes:
+The module relies on two types of indexes:
 
 1. **GIN index on JSONB column**: Enables fast key existence checks and
    value lookups across all attributes in the column

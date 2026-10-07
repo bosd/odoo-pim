@@ -203,10 +203,18 @@ class AttributeAttribute(models.Model):
             )
             return False
 
+    def _index_serialization_field(self):
+        """Have base_sparse_field_jsonb create a GIN index on the
+        serialization field."""
+        self.serialization_field_id.filtered(lambda f: not f.index).write(
+            {"index": True}
+        )
+
     @api.model_create_multi
     def create(self, vals_list):
         """Override create to handle index creation."""
         records = super().create(vals_list)
+        records.filtered("serialized")._index_serialization_field()
 
         for record in records:
             if record.create_gin_index and record.serialized:
