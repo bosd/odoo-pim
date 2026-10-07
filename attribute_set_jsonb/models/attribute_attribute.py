@@ -161,7 +161,9 @@ class AttributeAttribute(models.Model):
                 column=sql.Identifier(jsonb_column),
                 attr_name=sql.Literal(self.name),
             )
-            cr.execute(create_index_query)
+            # A savepoint keeps the transaction usable if the query fails
+            with cr.savepoint(flush=False):
+                cr.execute(create_index_query)
             _logger.info(
                 "Created expression index %s on %s.%s for attribute %s",
                 index_name,
@@ -192,7 +194,9 @@ class AttributeAttribute(models.Model):
             drop_index_query = sql.SQL("DROP INDEX IF EXISTS {index}").format(
                 index=sql.Identifier(index_name),
             )
-            cr.execute(drop_index_query)
+            # A savepoint keeps the transaction usable if the query fails
+            with cr.savepoint(flush=False):
+                cr.execute(drop_index_query)
             _logger.info("Dropped expression index %s", index_name)
             return True
         except Psycopg2Error as e:

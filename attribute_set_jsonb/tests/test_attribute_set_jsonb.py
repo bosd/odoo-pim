@@ -2,8 +2,6 @@
 
 from unittest.mock import patch
 
-from psycopg2 import Error as Psycopg2Error
-
 from odoo.tests import TransactionCase
 from odoo.tools import SQL, mute_logger
 
@@ -53,13 +51,14 @@ class TestAttributeSetJsonb(TransactionCase):
         )
 
     def _failing_execute(self, statement):
-        """Patch the cursor so that queries containing statement fail."""
+        """Patch the cursor so that queries containing statement fail in
+        PostgreSQL, which aborts the transaction unless in a savepoint."""
         cr = self.env.cr
         execute = cr.execute
 
         def _execute(query, *args, **kwargs):
             if statement in str(query):
-                raise Psycopg2Error("simulated failure")
+                return execute("SELECT 1 / 0")
             return execute(query, *args, **kwargs)
 
         return patch.object(cr, "execute", side_effect=_execute)
@@ -179,12 +178,16 @@ class TestAttributeSetJsonb(TransactionCase):
         self.assertLessEqual(len(index_name), 63)
 
     def test_expression_index_create_error(self):
-        with self._failing_execute("CREATE INDEX"), mute_logger(_LOGGER):
+        with self._failing_execute("CREATE INDEX"), mute_logger(_LOGGER, "odoo.sql_db"):
             self.assertFalse(self.attribute._create_expression_index())
+        # the transaction is still usable
+        self.assertEqual(self.env["res.partner"].search_count([("id", "=", 0)]), 0)
 
     def test_expression_index_drop_error(self):
-        with self._failing_execute("DROP INDEX"), mute_logger(_LOGGER):
+        with self._failing_execute("DROP INDEX"), mute_logger(_LOGGER, "odoo.sql_db"):
             self.assertFalse(self.attribute._drop_expression_index())
+        # the transaction is still usable
+        self.assertEqual(self.env["res.partner"].search_count([("id", "=", 0)]), 0)
 
     def test_regenerate_all_indexes(self):
         self.attribute.create_gin_index = True
@@ -201,6 +204,6 @@ class TestAttributeSetJsonb(TransactionCase):
         self.env.cr.execute(
             SQL("DROP INDEX %s", SQL.identifier(self.attribute._get_index_name()))
         )
-        with self._failing_execute("CREATE INDEX"), mute_logger(_LOGGER):
+        with self._failing_execute("CREATE INDEX"), mute_logger(_LOGGER, "odoo.sql_db"):
             result = self.attribute.action_regenerate_all_indexes()
         self.assertEqual(result["params"]["type"], "warning")
